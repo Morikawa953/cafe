@@ -1,0 +1,53 @@
+<h1>users#show</h1>
+<p>名前 : <%= @user.name %></p>
+<p>メールアドレス : <%= @user.email %></p>
+<p>プロフィール : <%= @user.profile %></p>
+
+<% if current_user.id == @user.id %>
+  <%= link_to "編集する", edit_user_registration_path %>
+<% end %>
+
+<h2>ユーザーの投稿一覧</h2>
+<% @user.shops.each do |t| %>
+  <%= t.place %>
+  <%= t.shop_name %>
+<% end %>
+
+<h2>ユーザーがいいねした投稿一覧</h2>
+<% @user.liked_shops.each do |t| %>
+  <%= t.user.name %>
+  <%= t.shop_name %>
+<% end %>
+<!-- ここまで-->
+
+<div class="user-in">
+<h2><%= @user.email %></h2>
+
+<% if @user.id == current_user.id %>
+    <%= @msg %>
+<% else %>
+    <% if @isRoom == true %>
+        <p><%= link_to 'DMへ', room_path(@roomId) %></p>
+    <% else %>
+        <%= form_for @room do |f| %>
+            <%= fields_for @entry do |e|%>
+                <% e.hidden_field :user_id, value: @user.id %>
+            <% end %>
+        <%= f.submit "DMを開始する"%>
+        <% end %>
+    <% end %>
+<% end %>
+</div>
+
+<%= link_to "一覧に戻る", shops_path %>
+
+<style>
+.user-in{
+    width:300px;
+    padding:10px;
+    margin:10px;
+    text-align:center;
+    border:1px solid darkgray;
+    background-color:gainsboro;
+}
+</style>

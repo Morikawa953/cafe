@@ -1,0 +1,54 @@
+<h1>GeekCafe</h1>
+<h3>詳細</h3>
+<div class="shop">
+  <p><%= @shop.place %></p>
+  <p><%= @shop.shop_name %></p>
+  <p><%= @shop.adress %></p>
+  <p><%= @shop.created_at %></p>
+    <% if user_signed_in? %>
+        <% if current_user.already_liked?(@shop) %>
+            <%= button_to shop_like_path(@shop), method: :delete do %>
+                <p>いいねを取り消す</p><%= @shop.likes.count %>
+            <% end %>
+        <% else %>
+            <%= button_to shop_likes_path(@shop), method: :post do %>
+                <p>いいね</p><%= @shop.likes.count %>
+            <% end %>
+        <% end %>
+    <% else %>
+        <p>いいねの数 = </p><%= @shop.likes.count %>
+    <% end %>
+      <%= link_to "編集する", edit_shop_path(@shop.id) %>
+</div>
+
+<h2>いいねしたユーザー</h2>
+<% @shop.liked_users.each do |user| %>
+    <li><%= user.email %></li>
+<% end %>
+
+<% @shop.tags.each do |tag| %>
+  <span><%= tag.name %></span>
+<% end %>
+
+<div class="comment-wrapper">
+  <p>コメント一覧</p>
+  <% @comments.each do |c| %>
+    <div>
+      <%= c.user.email unless c.user.blank? %>
+      <br>
+      <%= c.content %>
+    </div>
+      <br>
+  <% end %>
+
+  <% if user_signed_in? %>
+    <%= form_with(model: [@shop, @comment], local: true) do |f| %>
+      <%= f.text_area :content %>
+      <%= button_tag type: "submit" do %>
+        <i class="far fa-comments"></i> コメントする
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+<%= link_to "一覧に戻る", shops_path %>

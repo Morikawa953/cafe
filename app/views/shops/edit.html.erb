@@ -1,0 +1,17 @@
+<%= form_for @shop do |f| %>
+  <div class="field">
+    <%= f.label :場所 %>
+    <%= f.text_field :place, :size => 30 %>
+  </div>
+
+  <div class="field">
+    <%= f.label :店名 %>
+    <%= f.text_field :shop_name, :size => 30 %>
+  </div>
+
+  <div class="field">
+    <%= f.label :住所 %>
+    <%= f.text_field :adress, :size => 30 %>
+  </div>
+    <%= f.submit "編集する" %>
+  <% end %>

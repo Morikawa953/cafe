@@ -1,0 +1,59 @@
+<h1>GeekCafe</h1>
+
+<h3>投稿を検索</h3>
+ <%= form_tag({controller:"shops",action:"index"}, method: :get) do %>
+   <%= text_field_tag :search %>
+   <%= submit_tag '検索する'  %>
+<% end %>
+
+<%= form_tag({controller:"shops",action:"index"}, method: :get) do %>
+  <%= select_tag :tag_search, options_from_collection_for_select(@tag, "id","name") %>
+  <%= submit_tag '検索' %>
+<% end %>
+
+<h3>一覧ページ</h3>
+<%= link_to "新規投稿へ", new_shop_path %>
+
+<% if user_signed_in? %>
+  <%= link_to "マイページへ", user_path(current_user.id) %>
+<% end %>
+
+<%= page_entries_info @shops %>
+<div class="shops-container">
+  <% @shops.each do |t| %>
+    <div class="shop">
+    <a href="/users/<%= t.user.id %>"><%= t.user.name %></a>
+      <%= t.place %>
+      <%= t.shop_name %>
+      <%= t.adress %>
+      <%= image_tag t.image_url, size: "250x200" if t.image? %>
+      <div>
+        <h2>総合評価：
+        <span class="star-rating">
+          <span class="star-rating-front" style="width: <%= getPercent(t.rating) %>%;">★★★★★</span>
+          <span class="star-rating-back">★★★★★</span>
+        </span> 
+        </h2>
+      </div>
+      <% if user_signed_in? %>
+      <% if current_user.already_liked?(t) %>
+          <%= button_to shop_like_path(id: t.id, shop_id: t.id), method: :delete do %>
+              <p>いいねを取り消す</p><%= t.likes.count %>
+          <% end %>
+      <% else %>
+          <%= button_to shop_likes_path(id: t.id, shop_id: t.id), method: :post do %>
+              <p>いいね</p><%= t.likes.count %>
+          <% end %>
+      <% end %>
+  <% else %>
+      <p>いいねの数 = </p><%= t.likes.count %>
+  <% end %>
+      <%= link_to "詳細へ", shop_path(t.id) %>
+      <% if user_signed_in? && current_user.id == t.user_id %> 
+        <%= link_to "編集する", edit_shop_path(t.id) %>
+        <%= button_to "削除する", shop_path(t.id), method: :delete %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+<%= paginate @shops %>
